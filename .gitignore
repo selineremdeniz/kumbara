@@ -1,0 +1,21 @@
+# Kişisel finans verisi — ASLA depoya eklemeyin
+*.db
+*.sqlite
+.kumbara/
+/veri/
+/ekstreler/
+*.xlsx
+*.xls
+*.pdf
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+*.log

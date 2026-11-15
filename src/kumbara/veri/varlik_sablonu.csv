@@ -1,0 +1,10 @@
+tur;kod;miktar;maliyet;kurum;hedef;deger
+fon;AFT;10000;8500;İş Yatırım;Ev peşinatı;
+fon;TTE;2500;;İş Yatırım;;
+hisse;THYAO;50;14000;Midas;;
+altin;gram;20;;Ev;Acil durum fonu;
+altin;ceyrek;4;32000;Ev;;
+altin;22ayar;35;;Ev;;
+doviz;USD;1000;;Yapı Kredi;Acil durum fonu;
+nakit;Vadeli mevduat;150000;;Yapı Kredi;Acil durum fonu;
+diger;BES hesabı;1;;Allianz;Ev / emeklilik;85000

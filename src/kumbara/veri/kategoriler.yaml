@@ -1,0 +1,144 @@
+# Varsayılan kategori kuralları.
+# Her kural: anahtar kelimeler (açıklamada geçerse eşleşir, Türkçe karakter/büyük-küçük harf fark etmez).
+# Sıra önemlidir: ilk eşleşen kural kazanır, bu yüzden özel kurallar üstte olmalı.
+# Anahtar kelimenin sonundaki ekler serbesttir (FAIZ → FAIZI). Sonu '$' ile biten anahtar tam
+# kelimedir: 'TAKSI$' "TAKSİ"yi yakalar ama "TAKSİT"i yakalamaz.
+# yon: "gider" (yalnız harcamalara), "gelir" (yalnız girişlere) veya "hepsi".
+# zorunlu: gelecek ay bütçesinde kısılamayan (zorunlu) harcama mı?
+# Kendi kurallarınızı ~/.kumbara/kategoriler.yaml dosyasına aynı biçimde yazarsanız bunların ÖNÜNE eklenir.
+
+kurallar:
+  - kategori: Taksitler
+    yon: gider
+    zorunlu: true
+    anahtar: [BU DONEME AIT TAKSIT]
+  - kategori: BES ve Birikim
+    yon: hepsi
+    zorunlu: false
+    anahtar: [YASAM VE EMEKLI, BIREYSEL EMEKLILIK, BES KATKI, EMEKLILIK SIRKETI]
+  - kategori: Transfer
+    yon: hepsi
+    zorunlu: false
+    anahtar: [KREDI KARTI ODEME, KART ODEMESI, KK ODEME, EKSTRE ODEME, HESAPTAN ODEME,
+              VIRMAN, KENDI HESABINA, HESAPTAN AKTARIM, ODEMELERINIZ ICIN, ODEMENIZ ICIN, TESEKKUR EDERIZ, ODEME TESEKKUR, HESAPLAR ARASI, BIREYSEL EMEKLILIK AKTARIM]
+  - kategori: İade
+    yon: gelir
+    zorunlu: false
+    anahtar: [IADE, REFUND, CHARGEBACK, IPTAL]
+  - kategori: Maaş
+    yon: gelir
+    zorunlu: false
+    anahtar: [MAAS, UCRET ODEMESI, SALARY, PAYROLL, BURS]
+  - kategori: Faiz ve Getiri
+    yon: gelir
+    zorunlu: false
+    anahtar: [FAIZ, TEMETTU, KAR PAYI, FON SATIS, GETIRI]
+  - kategori: Kira
+    yon: gider
+    zorunlu: true
+    anahtar: [KIRA, AIDAT, SITE YONETIM, APARTMAN YONETIM]
+  - kategori: Fatura
+    yon: gider
+    zorunlu: true
+    anahtar: [ELEKTRIK, ENERJISA, CK ENERJI, BEDAS, AYEDAS, IGDAS, DOGALGAZ, BASKENTGAZ, ISKI,
+              ASKI, IZSU, SU IDARESI, TURKCELL, VODAFONE, TURK TELEKOM, TT MOBIL, SUPERONLINE,
+              TURKNET, KABLONET, MILLENICOM, FATURA]
+  - kategori: Kredi ve Taksit
+    yon: gider
+    zorunlu: true
+    anahtar: [KREDI TAKSIT, KREDI ODEME, IHTIYAC KREDISI, KONUT KREDISI, TASIT KREDISI]
+  - kategori: Sigorta
+    yon: gider
+    zorunlu: true
+    anahtar: [SIGORTA, KASKO, DASK, TRAFIK POLICE, ANADOLU HAYAT, ALLIANZ, AXA, MAPFRE]
+  - kategori: Vergi ve Harç
+    yon: gider
+    zorunlu: true
+    anahtar: [VERGI, GIB, HARC, MTV, BELEDIYE, SGK, EMLAK VERGISI, TRAFIK CEZA]
+  - kategori: Yeme-İçme   # yemek siparişi; Market (GETIR) ve Ulaşım (UBER) kurallarından önce
+    yon: gider
+    zorunlu: false
+    anahtar: [UBER EATS, TRENDYOL YEMEK, GETIR YEMEK, YEMEKSEPETI, MIGROS YEMEK]
+  - kategori: Market
+    yon: gider
+    zorunlu: true
+    anahtar: [MIGROS, MACRO CENTER, CARREFOUR, A101, BIM, SOK MARKET, SOK MAGAZA, FILE MARKET,
+              HAKMAR, METRO GROSMARKET, ONUR MARKET, TARIM KREDI, GETIR, ISTEGELSIN, MARKET,
+              BAKKAL, MANAV, KASAP, FIRIN, GIDA, TEKEL, SARKUTERI]
+  - kategori: Eğitim
+    yon: gider
+    zorunlu: true
+    anahtar: [UNIVERSITE, OKUL, KOLEJ, KURS, DERSHANE, UDEMY, COURSERA, KIRTASIYE, KITAP]
+  - kategori: Sağlık
+    yon: gider
+    zorunlu: true
+    anahtar: [ECZANE, ECZ, HASTANE, KLINIK, POLIKLINIK, DIS HEKIMI, LABORATUVAR, OPTIK, ACIBADEM,
+              MEDICAL PARK, MEMORIAL]
+  - kategori: Yakıt
+    yon: gider
+    zorunlu: true
+    anahtar: [OPET, SHELL, PETROL OFISI, BP, TOTAL, AYTEMIZ, LUKOIL, TP PETROL, AKARYAKIT, ALPET]
+  - kategori: Taksi ve Uber   # isteğe bağlı: toplu taşımadan ayrı tutulur
+    yon: gider
+    zorunlu: false
+    anahtar: [UBER, BITAKSI, TAKSI$, PAYTAX, MARTI$, SCOTTY, BOLT$]
+  - kategori: Ulaşım
+    yon: gider
+    zorunlu: true
+    anahtar: [ISTANBULKART, BELBIM, IETT, METRO ISTANBUL, ANKARAKART, IZMIRIM, MARMARAY,
+              OTOPARK, ISPARK, HGS, OGS, KOPRU, OTOYOL, IDO, SEHIR HATLARI, TURYOL, DENTUR, VAPUR]
+  - kategori: Abonelik
+    yon: gider
+    zorunlu: false
+    anahtar: [NETFLIX, SPOTIFY, YOUTUBE, DISNEY, AMAZON PRIME, BLUTV, EXXEN, GAIN, TABII, APPLE.COM,
+              ICLOUD, GOOGLE ONE, GOOGLE STORAGE, CHATGPT, OPENAI, ANTHROPIC, CLAUDE, AMAZONPRI, GOOGLE, MICROSOFT,
+              ADOBE, STEAM, PLAYSTATION, XBOX, SPOR SALONU, MACFIT]
+  - kategori: Yeme-İçme
+    yon: gider
+    zorunlu: false
+    anahtar: [YEMEKSEPETI, TRENDYOL YEMEK, GETIR YEMEK, RESTORAN, RESTAURANT, CAFE, KAFE, KAHVE,
+              STARBUCKS, KAHVE DUNYASI, BURGER, MCDONALDS, DOMINOS, PIZZA, DONER, KEBAP, LOKANTA,
+              RETORANT, RESTORAN, BALIK RESTORAN, MEYHANE, BISTRO, BAR$,
+              PASTANE, SIMIT]
+  - kategori: Giyim
+    yon: gider
+    zorunlu: false
+    anahtar: [LC WAIKIKI, DEFACTO, KOTON, MAVI, ZARA, H&M, HM HENNES, MANGO, BERSHKA, PULL BEAR,
+              FLO, BOYNER, NETWORK, COLINS, IPEKYOL, DECATHLON, ASICS, SUPERSTEP, NIKE, ADIDAS,
+              STRADIVARIUS, STRDVRS, OYSHO, MASSIMO DUTTI, VAKKO, BEYMEN, PUMA, SKECHERS,
+              TEKSTIL, KONFEKSIYON]
+  - kategori: Elektronik
+    yon: gider
+    zorunlu: false
+    anahtar: [TEKNOSA, MEDIAMARKT, MEDIA MARKT, VATAN BILGISAYAR, APPLE STORE, SAMSUNG, ITOPYA]
+  - kategori: Online Alışveriş
+    yon: gider
+    zorunlu: false
+    anahtar: [TRENDYOL, HEPSIBURADA, AMAZON, N11, CICEKSEPETI, PAZARAMA, ALIEXPRESS, TEMU, IDEFIX]
+  - kategori: Seyahat
+    yon: gider
+    zorunlu: false
+    anahtar: [THY, TURK HAVA YOLLARI, PEGASUS, AJET, SUNEXPRESS, OTEL, HOTEL, BOOKING, AIRBNB,
+              OBILET, ENUYGUN, AGODA, EXPEDIA, TCDD, KAMIL KOC, METRO TURIZM, PAMUKKALE TURIZM]
+  - kategori: Eğlence
+    yon: gider
+    zorunlu: false
+    anahtar: [SINEMA, CINEMAXIMUM, BILETIX, PASSO, BILETINIAL, KONSER, TIYATRO, MUZE]
+  - kategori: Nakit Çekim
+    yon: gider
+    zorunlu: false
+    anahtar: [ATM, NAKIT CEKIM, PARA CEKME]
+  - kategori: Banka Masrafı
+    yon: gider
+    zorunlu: false
+    anahtar: [HESAP ISLETIM, KART AIDATI, YILLIK UCRET, EFT UCRETI, HAVALE UCRETI, MASRAF, KOMISYON,
+              BSMV, KKDF, GECIKME FAIZI, FAIZ TUTARI, FAIZ, NAKIT AVANS UCRETI]
+  - kategori: Kişisel Bakım
+    yon: gider
+    zorunlu: false
+    anahtar: [LOSTRA, KUAFOR, BERBER, GUZELLIK, MANIKUR, GRATIS, WATSONS, ROSSMANN, SEPHORA,
+              FLORMAR, KIKO, MAC COSMETICS]
+  - kategori: Alışveriş (AVM)
+    yon: gider
+    zorunlu: false
+    anahtar: [AVM, OZDILEK, HILTOWN, MARKS SPENCER, KOCTAS, IKEA, ENGLISH HOME, MADAME COCO]
