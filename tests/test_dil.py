@@ -147,3 +147,12 @@ def test_masaustu_bos_port():
         s.listen()
         dolu = s.getsockname()[1]
         assert bos_port(dolu) != dolu
+
+
+def test_masaustu_cikti_cp1252_cokmez():
+    import subprocess
+    import sys
+    kod = "from kumbara.masaustu import cikti_utf8; cikti_utf8(); print('kumbara açılıyor… ı ş ğ 🐷')"
+    r = subprocess.run([sys.executable, "-c", kod], capture_output=True,
+                       env={**__import__("os").environ, "PYTHONIOENCODING": "cp1252"})
+    assert r.returncode == 0 and "açılıyor".encode() in r.stdout

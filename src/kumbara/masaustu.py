@@ -6,6 +6,7 @@ Paneli yalnızca bu bilgisayardan erişilebilir şekilde açar ve tarayıcıda g
 
 from __future__ import annotations
 
+import contextlib
 import os
 import socket
 import sys
@@ -36,7 +37,16 @@ def tarayicida_ac(port: int, bekle: float = 120.0) -> None:
         time.sleep(0.5)
 
 
+def cikti_utf8() -> None:
+    """Windows konsolu/yönlendirilmiş çıktı cp1252 olabilir: Türkçe karakterler çökmesin."""
+    for akis in (sys.stdout, sys.stderr):
+        if akis is not None and hasattr(akis, "reconfigure"):
+            with contextlib.suppress(OSError, ValueError):
+                akis.reconfigure(encoding="utf-8", errors="replace")
+
+
 def main() -> None:
+    cikti_utf8()
     from streamlit.web import cli as stcli
 
     from kumbara.cli import STREAMLIT_GIZLILIK
