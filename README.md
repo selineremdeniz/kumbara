@@ -37,7 +37,7 @@ git clone https://github.com/selineremdeniz/kumbara && cd kumbara
 uv sync --extra panel        # or: pip install -e ".[panel]"
 ```
 
-To build the desktop app yourself, run `pip install ".[panel]" pyinstaller`, then `cd paketleme && pyinstaller kumbara.spec`. The app is created in `paketleme/dist/kumbara/`. Pushing a tag such as `v0.1.0` builds the Windows and macOS apps on GitHub Actions and attaches them to a release.
+To build the desktop app yourself, run `pip install ".[panel]" pyinstaller`, then `cd paketleme && pyinstaller kumbara.spec`. The app is created in `paketleme/dist/kumbara/`. Publishing a GitHub release (or pushing a tag such as `v0.1.0`) builds the Windows and macOS apps on GitHub Actions and attaches them to that release.
 
 ## The panel
 

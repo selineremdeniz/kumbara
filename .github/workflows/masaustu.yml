@@ -1,12 +1,18 @@
 # Windows (.exe) ve macOS (Apple Silicon) masaüstü paketlerini derler.
-# "v" ile başlayan bir etiket (ör. v0.1.0) gönderilince paketler GitHub Releases'e eklenir;
-# Actions sekmesinden elle de çalıştırılabilir (paketler o zaman yalnızca artifact olur).
+# GitHub'da bir sürüm (Release) yayınlanınca ya da "v" ile başlayan bir etiket gönderilince
+# paketler o sürüme eklenir; Actions sekmesinden elle de çalıştırılabilir (yalnızca artifact).
 name: Masaüstü paketleri
 
 on:
+  release:
+    types: [published]
   push:
     tags: ["v*"]
   workflow_dispatch:
+
+concurrency:  # sürüm oluşturmak hem "release" hem etiket olayı üretebilir: tek çalışma yeter
+  group: masaustu-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -62,7 +68,7 @@ jobs:
 
   yayinla:
     needs: paketle
-    if: startsWith(github.ref, 'refs/tags/')
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -82,5 +88,13 @@ jobs:
           **macOS (Apple Silicon):** unzip `kumbara-macos-apple-silicon.zip` and double-click `kumbara` in the folder.
           No installation needed; the panel opens in your browser. See "Download the app" in the README.
           NOTLAR
-          gh release create "$GITHUB_REF_NAME" paketler/*.zip --repo "$GITHUB_REPOSITORY" \
-            --title "kumbara $GITHUB_REF_NAME" --notes-file notlar.md
+          SURUM="${{ github.event.release.tag_name || github.ref_name }}"
+          if gh release view "$SURUM" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$SURUM" paketler/*.zip --repo "$GITHUB_REPOSITORY" --clobber
+            if [ -z "$(gh release view "$SURUM" --repo "$GITHUB_REPOSITORY" --json body -q .body)" ]; then
+              gh release edit "$SURUM" --repo "$GITHUB_REPOSITORY" --notes-file notlar.md
+            fi
+          else
+            gh release create "$SURUM" paketler/*.zip --repo "$GITHUB_REPOSITORY" \
+              --title "kumbara $SURUM" --notes-file notlar.md
+          fi
