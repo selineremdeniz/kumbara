@@ -19,3 +19,7 @@ dist/
 build/
 *.egg-info/
 *.log
+
+# PyInstaller
+paketleme/build/
+paketleme/dist/

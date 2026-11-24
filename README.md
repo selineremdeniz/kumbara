@@ -10,12 +10,34 @@ An open-source personal finance assistant that runs on your own computer. Upload
 
 > ⚠️ **Not investment advice.** The allocations are educational examples based on general assumptions. In Turkey, investment advice requires a CMB (SPK) licence. Make decisions with a licensed adviser.
 
-## Installation
+## Download the app (no installation)
+
+Get the latest version from the [Releases page](https://github.com/selineremdeniz/kumbara/releases/latest):
+
+- **Windows:** download `kumbara-windows.zip`, unzip it, open the `kumbara` folder and double-click `kumbara.exe`.
+- **macOS (Apple Silicon, M1 or newer):** download `kumbara-macos-apple-silicon.zip`, unzip it, open the `kumbara` folder and double-click `kumbara`.
+
+A small terminal window opens and the panel opens in your browser. Closing that window quits kumbara. Your data is stored in `~/.kumbara/` as usual.
+
+The apps are not signed, so the system warns you the first time:
+
+- **Windows:** SmartScreen shows "Windows protected your PC". Click **More info → Run anyway**.
+- **macOS:** macOS says the app can't be opened. Open **System Settings → Privacy & Security** and click **Open Anyway**. Alternatively, run this once in Terminal (adjust the path to where you unzipped it):
+
+  ```bash
+  xattr -dr com.apple.quarantine ~/Downloads/kumbara
+  ```
+
+Reading screenshots on Windows needs [Tesseract](https://github.com/UB-Mannheim/tesseract/wiki) installed separately. PDF statements work without it, and macOS uses its built-in text recognition.
+
+## Installation (from source)
 
 ```bash
 git clone https://github.com/selineremdeniz/kumbara && cd kumbara
 uv sync --extra panel        # or: pip install -e ".[panel]"
 ```
+
+To build the desktop app yourself, run `pip install ".[panel]" pyinstaller`, then `cd paketleme && pyinstaller kumbara.spec`. The app is created in `paketleme/dist/kumbara/`. Pushing a tag such as `v0.1.0` builds the Windows and macOS apps on GitHub Actions and attaches them to a release.
 
 ## The panel
 

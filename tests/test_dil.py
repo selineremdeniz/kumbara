@@ -136,3 +136,14 @@ def test_negatif_para_bicimi():
     assert para(-1234.5, ULKELER["US"]) == "-$1,234" or para(-1234.5, ULKELER["US"]) == "-$1,235"
     assert para(-1234.5, ULKELER["TR"], 2) == "-1.234,50 ₺"
     assert para(-0.4, ULKELER["US"]) == "$0"
+
+
+def test_masaustu_bos_port():
+    import socket
+
+    from kumbara.masaustu import bos_port
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        s.listen()
+        dolu = s.getsockname()[1]
+        assert bos_port(dolu) != dolu

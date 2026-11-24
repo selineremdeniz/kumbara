@@ -1,0 +1,86 @@
+# Windows (.exe) ve macOS (Apple Silicon) masaüstü paketlerini derler.
+# "v" ile başlayan bir etiket (ör. v0.1.0) gönderilince paketler GitHub Releases'e eklenir;
+# Actions sekmesinden elle de çalıştırılabilir (paketler o zaman yalnızca artifact olur).
+name: Masaüstü paketleri
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  paketle:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            ad: kumbara-windows
+          - os: macos-latest
+            ad: kumbara-macos-apple-silicon
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Bağımlılıklar
+        run: python -m pip install ".[panel]" pyinstaller
+      - name: Derle
+        working-directory: paketleme
+        run: pyinstaller kumbara.spec --noconfirm
+      - name: Açılıyor mu? (sağlık denetimi)
+        working-directory: paketleme/dist/kumbara
+        env:
+          BROWSER: none
+          KUMBARA_VERI_DIZINI: ${{ runner.temp }}/kumbara-veri
+        run: |
+          ./kumbara > ../calisma.log 2>&1 &
+          for i in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:8501/_stcore/health; then echo " hazır"; exit 0; fi
+            sleep 2
+          done
+          cat ../calisma.log; exit 1
+      - name: Sıkıştır
+        run: |
+          cd paketleme/dist
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            7z a -tzip "../../${{ matrix.ad }}.zip" kumbara > /dev/null
+          else
+            ditto -c -k --keepParent kumbara "../../${{ matrix.ad }}.zip"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.ad }}
+          path: ${{ matrix.ad }}.zip
+
+  yayinla:
+    needs: paketle
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: paketler
+          merge-multiple: true
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cat > notlar.md <<'NOTLAR'
+          **Windows:** `kumbara-windows.zip` dosyasını indirip açın, klasördeki `kumbara.exe`'ye çift tıklayın.
+          **macOS (Apple Silicon):** `kumbara-macos-apple-silicon.zip` dosyasını açın, klasördeki `kumbara`'ya çift tıklayın.
+          Kurulum gerekmez; panel tarayıcınızda açılır. Ayrıntılar README'de ("Download the app").
+
+          **Windows:** download `kumbara-windows.zip`, unzip it and double-click `kumbara.exe`.
+          **macOS (Apple Silicon):** unzip `kumbara-macos-apple-silicon.zip` and double-click `kumbara` in the folder.
+          No installation needed; the panel opens in your browser. See "Download the app" in the README.
+          NOTLAR
+          gh release create "$GITHUB_REF_NAME" paketler/*.zip --repo "$GITHUB_REPOSITORY" \
+            --title "kumbara $GITHUB_REF_NAME" --notes-file notlar.md
