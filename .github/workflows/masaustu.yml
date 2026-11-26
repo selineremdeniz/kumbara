@@ -41,18 +41,16 @@ jobs:
       - name: Derle
         working-directory: paketleme
         run: pyinstaller kumbara.spec --noconfirm
-      - name: Açılıyor mu? (sağlık denetimi)
+      - name: Kısayollar (macOS)
+        if: runner.os == 'macOS'
         working-directory: paketleme/dist/kumbara
-        env:
-          BROWSER: none
-          KUMBARA_VERI_DIZINI: ${{ runner.temp }}/kumbara-veri
         run: |
-          ./kumbara > ../calisma.log 2>&1 &
-          for i in $(seq 1 90); do
-            if curl -sf http://127.0.0.1:8501/_stcore/health; then echo " hazır"; exit 0; fi
-            sleep 2
-          done
-          cat ../calisma.log; exit 1
+          echo "Paketteki kısayollar (göreli olmalı):"
+          find . -type l -exec ls -l {} \; | head -40
+          # Mutlak yol gösteren kısayol başka bilgisayarda kırılır: derlemeyi durdur
+          if find . -type l -lname '/*' | grep -q .; then
+            echo "HATA: mutlak kısayol var"; find . -type l -lname '/*' -exec ls -l {} \;; exit 1
+          fi
       - name: Sıkıştır
         run: |
           cd paketleme/dist
@@ -61,6 +59,26 @@ jobs:
           else
             ditto -c -k --keepParent kumbara "../../${{ matrix.ad }}.zip"
           fi
+      - name: Açılıyor mu? (zip'ten açılmış kopyada, boşluklu klasörde)
+        env:
+          BROWSER: none
+          KUMBARA_VERI_DIZINI: ${{ runner.temp }}/kumbara-veri
+        run: |
+          HEDEF="$RUNNER_TEMP/indirilen dosyalar"
+          mkdir -p "$HEDEF"
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            7z x "${{ matrix.ad }}.zip" -o"$HEDEF" > /dev/null
+          else
+            ditto -x -k "${{ matrix.ad }}.zip" "$HEDEF"
+            ls -l "$HEDEF/kumbara/_internal/Python" || true
+          fi
+          cd "$HEDEF/kumbara"
+          ./kumbara > "$RUNNER_TEMP/calisma.log" 2>&1 &
+          for i in $(seq 1 90); do
+            if curl -sf http://127.0.0.1:8501/_stcore/health; then echo " hazır"; exit 0; fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/calisma.log"; exit 1
       - uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.ad }}
