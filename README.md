@@ -22,13 +22,11 @@ A small terminal window opens and the panel opens in your browser. Closing that 
 The apps are not signed, so the system warns you the first time:
 
 - **Windows:** SmartScreen shows "Windows protected your PC". Click **More info → Run anyway**.
-- **macOS:** macOS may say *"kumbara" is damaged and can't be opened. You should move it to the Trash.* The app is not damaged: macOS says this about unsigned apps downloaded from the internet. Click **Cancel**, not *Move to Trash*, then:
-  1. Open **Terminal**.
-  2. Type `xattr -cr ` with a space at the end, but don't press Enter yet.
-  3. Drag the unzipped `kumbara` folder into the Terminal window to fill in its path, then press Enter.
-  4. Double-click `kumbara` in the folder again.
+- **macOS:** the app is not signed, so macOS blocks it and may call it *damaged*. It is not damaged. Remove the block **before unzipping**:
+  1. Open **Terminal**, type `xattr -c ` with a space at the end, drag the downloaded zip into the window and press Enter. If the zip contains another zip, do the same for that one.
+  2. Unzip it and double-click `kumbara` in the `kumbara` folder.
 
-  If macOS still says it is damaged, run `codesign --force --deep --sign - ` the same way (drag the folder in, press Enter) and try again.
+  If macOS still says *"…is damaged and can't be opened. You should move it to the Trash"*, click **Cancel**. Never click *Move to Trash*: it deletes a file inside the app and kumbara will no longer start. Then run `xattr -cr ` the same way on the `kumbara` folder and try again. If it still won't open, run `codesign --force --deep --sign - ` on the folder too. If you already moved a file to the Trash, delete the folder and unzip it again.
 
 Reading screenshots on Windows needs [Tesseract](https://github.com/UB-Mannheim/tesseract/wiki) installed separately. PDF statements work without it, and macOS uses its built-in text recognition.
 
